@@ -44,14 +44,14 @@ class RVGLAssistantProgram(Ui_MainWindow):
         # Handles the Parameters
         checkboxes = []
         for i_layout in range(6):
-            layout = getattr(self, 'layout_params_{}' .format(i_layout))
-            for i in range(self.verticalLayout_2.count()):
-                widget = self.verticalLayout_2.itemAt(i).widget()
+            layout = getattr(self, 'layout_params_{}' .format(i_layout+1))
+            for i in range(layout.count()):
+                widget = layout.itemAt(i).widget()
                 if isinstance(widget, QtWidgets.QCheckBox):
                     checkboxes.append(widget)
 
-            for checkbox in checkboxes:
-                checkbox.clicked.connect(lambda _, chk=checkbox: handle_param_click(checkbox=chk))
+        for checkbox in checkboxes:
+            checkbox.clicked.connect(lambda _, chk=checkbox: handle_param_click(checkbox=chk))
 
 
 def execute_rvgl():
