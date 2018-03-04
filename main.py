@@ -27,15 +27,9 @@ class RVGLAssistantProgram(Ui_MainWindow):
         self.actionChange_RVGL_Path.triggered.connect(choose_custom_rvgl_location)
 
         # Handles the launch button
-        self.btn_launch.clicked.connect(launch_rvgl)
+        self.btn_launch.clicked.connect(execute_rvgl)
 
         # Handles the Parameters
-
-
-def launch_rvgl():
-    thread = Thread(target=execute_rvgl())
-    thread.start()
-    thread.join()
 
 
 def execute_rvgl():
@@ -44,7 +38,7 @@ def execute_rvgl():
     path = os.path.join(rvgl_custom_path, rvgl_executable)
     print(path)
     subprocess.Popen(executable=path, args="")
-    # exit(0)
+    exit(0)
 
 
 def look_for_rvgl():

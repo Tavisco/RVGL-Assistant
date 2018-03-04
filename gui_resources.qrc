@@ -1,0 +1,8 @@
+<RCC>
+  <qresource prefix="buttons">
+    <file>resources/trash.png</file>
+    <file>resources/diskette.png</file>
+    <file>resources/down-arrow.png</file>
+    <file>resources/up-arrow.png</file>
+  </qresource>
+</RCC>

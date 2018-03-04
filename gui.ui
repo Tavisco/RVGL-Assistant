@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>548</width>
-    <height>322</height>
+    <width>556</width>
+    <height>394</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,8 +17,8 @@
    <widget class="QPushButton" name="btn_launch">
     <property name="geometry">
      <rect>
-      <x>370</x>
-      <y>240</y>
+      <x>380</x>
+      <y>320</y>
       <width>171</width>
       <height>41</height>
      </rect>
@@ -32,8 +32,8 @@
      <rect>
       <x>10</x>
       <y>10</y>
-      <width>531</width>
-      <height>221</height>
+      <width>541</width>
+      <height>301</height>
      </rect>
     </property>
     <property name="currentIndex">
@@ -46,13 +46,13 @@
      <widget class="QWidget" name="horizontalLayoutWidget">
       <property name="geometry">
        <rect>
-        <x>10</x>
+        <x>170</x>
         <y>10</y>
-        <width>511</width>
-        <height>171</height>
+        <width>351</width>
+        <height>241</height>
        </rect>
       </property>
-      <layout class="QHBoxLayout" name="horizontalLayout">
+      <layout class="QHBoxLayout" name="horizontalLayout_2">
        <item>
         <layout class="QVBoxLayout" name="verticalLayout_2">
          <item>
@@ -70,18 +70,73 @@
           </widget>
          </item>
          <item>
-          <widget class="QCheckBox" name="chk_param_nogamma">
-           <property name="text">
-            <string>Nogamma</string>
-           </property>
-          </widget>
+          <layout class="QVBoxLayout" name="verticalLayout_3">
+           <item>
+            <widget class="QCheckBox" name="checkBox">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="text">
+              <string>Localport</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="lineEdit">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="toolTip">
+              <string>Localport</string>
+             </property>
+             <property name="placeholderText">
+              <string>Port</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
          </item>
          <item>
-          <widget class="QCheckBox" name="chk_param_nointro">
-           <property name="text">
-            <string>Nointro</string>
-           </property>
-          </widget>
+          <layout class="QVBoxLayout" name="verticalLayout_4">
+           <item>
+            <widget class="QCheckBox" name="checkBox_2">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="text">
+              <string>Lobby</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="lineEdit_2">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="toolTip">
+              <string>Localport</string>
+             </property>
+             <property name="text">
+              <string/>
+             </property>
+             <property name="placeholderText">
+              <string>IP Address</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
          </item>
          <item>
           <widget class="QCheckBox" name="chk_param_nop2p">
@@ -116,6 +171,20 @@
           </widget>
          </item>
          <item>
+          <widget class="QCheckBox" name="chk_param_nointro">
+           <property name="text">
+            <string>Nointro</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="chk_param_nogamma">
+           <property name="text">
+            <string>Nogamma</string>
+           </property>
+          </widget>
+         </item>
+         <item>
           <widget class="QCheckBox" name="chk_param_sload">
            <property name="text">
             <string>Sload</string>
@@ -123,6 +192,72 @@
           </widget>
          </item>
         </layout>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QListWidget" name="listWidget">
+      <property name="geometry">
+       <rect>
+        <x>2</x>
+        <y>9</y>
+        <width>161</width>
+        <height>201</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QWidget" name="horizontalLayoutWidget_2">
+      <property name="geometry">
+       <rect>
+        <x>3</x>
+        <y>215</y>
+        <width>160</width>
+        <height>36</height>
+       </rect>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <widget class="QPushButton" name="pushButton_2">
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset resource="gui_resources.qrc">
+           <normaloff>:/buttons/resources/up-arrow.png</normaloff>:/buttons/resources/up-arrow.png</iconset>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="pushButton">
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset resource="gui_resources.qrc">
+           <normaloff>:/buttons/resources/down-arrow.png</normaloff>:/buttons/resources/down-arrow.png</iconset>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="pushButton_4">
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset resource="gui_resources.qrc">
+           <normaloff>:/buttons/resources/diskette.png</normaloff>:/buttons/resources/diskette.png</iconset>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="pushButton_3">
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset resource="gui_resources.qrc">
+           <normaloff>:/buttons/resources/trash.png</normaloff>:/buttons/resources/trash.png</iconset>
+         </property>
+        </widget>
        </item>
       </layout>
      </widget>
@@ -136,8 +271,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>521</width>
-        <height>181</height>
+        <width>531</width>
+        <height>251</height>
        </rect>
       </property>
       <column>
@@ -169,7 +304,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>548</width>
+     <width>556</width>
      <height>30</height>
     </rect>
    </property>
@@ -190,12 +325,12 @@
   </widget>
   <action name="actionExit">
    <property name="text">
-    <string>Exit</string>
+    <string>&amp;Exit</string>
    </property>
   </action>
   <action name="actionChange_RVGL_Path">
    <property name="text">
-    <string>Change RVGL Path</string>
+    <string>&amp;Change RVGL Path</string>
    </property>
   </action>
  </widget>
@@ -203,15 +338,15 @@
   <tabstop>TabMenu</tabstop>
   <tabstop>btn_launch</tabstop>
   <tabstop>chk_param_autokick</tabstop>
-  <tabstop>chk_param_nogamma</tabstop>
   <tabstop>chk_param_gogodemo</tabstop>
-  <tabstop>chk_param_nointro</tabstop>
   <tabstop>chk_param_nop2p</tabstop>
   <tabstop>chk_param_nopause</tabstop>
   <tabstop>chk_param_nouser</tabstop>
   <tabstop>chk_param_sessionlog</tabstop>
   <tabstop>chk_param_sload</tabstop>
  </tabstops>
- <resources/>
+ <resources>
+  <include location="gui_resources.qrc"/>
+ </resources>
  <connections/>
 </ui>
