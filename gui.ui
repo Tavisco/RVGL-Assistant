@@ -48,24 +48,24 @@
        <rect>
         <x>170</x>
         <y>10</y>
-        <width>542</width>
+        <width>547</width>
         <height>282</height>
        </rect>
       </property>
-      <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <layout class="QHBoxLayout" name="horizontalLayout_parameters">
        <item>
-        <layout class="QVBoxLayout" name="verticalLayout_2">
+        <layout class="QVBoxLayout" name="layout_params_1">
          <item>
           <widget class="QCheckBox" name="chk_param_autokick">
            <property name="text">
-            <string>Autokick</string>
+            <string>-autokick</string>
            </property>
           </widget>
          </item>
          <item>
           <widget class="QCheckBox" name="chk_param_gogodemo">
            <property name="text">
-            <string>Gogodemo</string>
+            <string>-gogodemo</string>
            </property>
           </widget>
          </item>
@@ -78,7 +78,7 @@
             </sizepolicy>
            </property>
            <property name="text">
-            <string>Lobby</string>
+            <string>-lobby</string>
            </property>
           </widget>
          </item>
@@ -113,7 +113,7 @@
             </sizepolicy>
            </property>
            <property name="text">
-            <string>Multisample</string>
+            <string>-multisample</string>
            </property>
           </widget>
          </item>
@@ -142,19 +142,19 @@
          <item>
           <widget class="QCheckBox" name="chk_param_nointro">
            <property name="text">
-            <string>Nointro</string>
+            <string>-nointro</string>
            </property>
           </widget>
          </item>
          <item>
           <widget class="QCheckBox" name="chk_param_nogamma">
            <property name="text">
-            <string>Nogamma</string>
+            <string>-nogamma</string>
            </property>
           </widget>
          </item>
          <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_6">
+          <layout class="QHBoxLayout" name="layout_params_4">
            <item>
             <widget class="QCheckBox" name="chk_param_localport">
              <property name="sizePolicy">
@@ -164,7 +164,7 @@
               </sizepolicy>
              </property>
              <property name="text">
-              <string>Localport</string>
+              <string>-localport</string>
              </property>
             </widget>
            </item>
@@ -201,40 +201,40 @@
         </layout>
        </item>
        <item>
-        <layout class="QVBoxLayout" name="verticalLayout">
+        <layout class="QVBoxLayout" name="layout_params_2">
          <property name="sizeConstraint">
           <enum>QLayout::SetMinimumSize</enum>
          </property>
          <item>
           <widget class="QCheckBox" name="chk_param_nop2p">
            <property name="text">
-            <string>Nop2p</string>
+            <string>-nop2p</string>
            </property>
           </widget>
          </item>
          <item>
           <widget class="QCheckBox" name="chk_param_nopause">
            <property name="text">
-            <string>Nopause</string>
+            <string>-nopause</string>
            </property>
           </widget>
          </item>
          <item>
           <widget class="QCheckBox" name="checkBox_6">
            <property name="text">
-            <string>Nosound</string>
+            <string>-nosound</string>
            </property>
           </widget>
          </item>
          <item>
           <widget class="QCheckBox" name="chk_param_nouser">
            <property name="text">
-            <string>Nouser</string>
+            <string>-nouser</string>
            </property>
           </widget>
          </item>
          <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_7">
+          <layout class="QHBoxLayout" name="layout_params_5">
            <item>
             <widget class="QCheckBox" name="checkBox_4">
              <property name="sizePolicy">
@@ -244,7 +244,7 @@
               </sizepolicy>
              </property>
              <property name="text">
-              <string>Profile</string>
+              <string>-profile</string>
              </property>
             </widget>
            </item>
@@ -292,18 +292,18 @@
           </layout>
          </item>
          <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_5">
+          <layout class="QHBoxLayout" name="layout_params_6">
            <item>
             <widget class="QCheckBox" name="checkBox_5">
              <property name="text">
-              <string>Res</string>
+              <string>-res</string>
              </property>
             </widget>
            </item>
            <item>
             <widget class="QCheckBox" name="checkBox_7">
              <property name="text">
-              <string>Window</string>
+              <string>-window</string>
              </property>
             </widget>
            </item>
@@ -383,30 +383,30 @@
          <item>
           <widget class="QCheckBox" name="chk_param_sessionlog">
            <property name="text">
-            <string>Sessionlog</string>
+            <string>-sessionlog</string>
            </property>
           </widget>
          </item>
          <item>
           <widget class="QCheckBox" name="chk_param_sload">
            <property name="text">
-            <string>Sload</string>
+            <string>-sload</string>
            </property>
           </widget>
          </item>
         </layout>
        </item>
        <item>
-        <layout class="QVBoxLayout" name="verticalLayout_4">
+        <layout class="QVBoxLayout" name="layout_params_3">
          <item>
           <widget class="QCheckBox" name="chk_param_dev">
            <property name="text">
-            <string>Dev</string>
+            <string>-dev</string>
            </property>
           </widget>
          </item>
          <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_8">
+          <layout class="QHBoxLayout" name="layout_params_7">
            <item>
             <widget class="QCheckBox" name="chk_param_alpharef">
              <property name="sizePolicy">
@@ -416,7 +416,7 @@
               </sizepolicy>
              </property>
              <property name="text">
-              <string>Alpharef</string>
+              <string>-alpharef</string>
              </property>
             </widget>
            </item>
@@ -453,7 +453,7 @@
          <item>
           <widget class="QCheckBox" name="chk_param_cubevisi">
            <property name="text">
-            <string>Cubevisi</string>
+            <string>cubevisi</string>
            </property>
           </widget>
          </item>

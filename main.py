@@ -15,6 +15,18 @@ from config import Config
 faulthandler.enable()
 configs = Config()
 configs_loaded = False
+selected_params = []
+
+
+def handle_param_click(checkbox):
+    global selected_params
+    param = checkbox.text().replace('&', '')
+    if checkbox.isChecked():
+        print('ON ' + param)
+        selected_params.append(param)
+    else:
+        print('OFF ' + param)
+        selected_params.remove(param)
 
 
 class RVGLAssistantProgram(Ui_MainWindow):
@@ -30,14 +42,28 @@ class RVGLAssistantProgram(Ui_MainWindow):
         self.btn_launch.clicked.connect(execute_rvgl)
 
         # Handles the Parameters
+        checkboxes = []
+        for i_layout in range(6):
+            layout = getattr(self, 'layout_params_{}' .format(i_layout))
+            for i in range(self.verticalLayout_2.count()):
+                widget = self.verticalLayout_2.itemAt(i).widget()
+                if isinstance(widget, QtWidgets.QCheckBox):
+                    checkboxes.append(widget)
+
+            for checkbox in checkboxes:
+                checkbox.clicked.connect(lambda _, chk=checkbox: handle_param_click(checkbox=chk))
 
 
 def execute_rvgl():
+    global selected_params
     if configs.rvgl_found:
         print('Launching RVGL')
         os.chdir(configs.rvgl_custom_path)
         path = os.path.join(configs.rvgl_custom_path, configs.rvgl_executable)
-        subprocess.Popen([path])
+        command = [path]
+        for param in selected_params:
+            command.append(param)
+        subprocess.Popen(command)
         exit(0)
     else:
         look_for_rvgl()
@@ -100,8 +126,7 @@ def load_configs():
         with open("./assistant.yml", 'r') as ymlfile:
             configs = yaml.load(ymlfile)
             configs_loaded = True
-            print('Configs loaded!')
-            #yaml.dump(configs, sys.stdout)
+            print('Configs loaded')
 
 
 if __name__ == '__main__':
