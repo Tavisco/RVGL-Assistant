@@ -7,7 +7,7 @@ import faulthandler
 import io
 from pathlib import Path
 from PyQt5 import QtWidgets
-from PyQt5.QtWidgets import QFileDialog
+from PyQt5.QtWidgets import QFileDialog, QInputDialog
 from gui import Ui_MainWindow
 from menu_bar import *
 from config import Config
@@ -16,17 +16,6 @@ faulthandler.enable()
 configs = Config()
 configs_loaded = False
 selected_params = []
-
-
-def handle_param_click(checkbox):
-    global selected_params
-    param = checkbox.text().replace('&', '')
-    if checkbox.isChecked():
-        print('ON ' + param)
-        selected_params.append(param)
-    else:
-        print('OFF ' + param)
-        selected_params.remove(param)
 
 
 class RVGLAssistantProgram(Ui_MainWindow):
@@ -38,13 +27,14 @@ class RVGLAssistantProgram(Ui_MainWindow):
         self.actionExit.triggered.connect(menu_action_exit)
         self.actionChange_RVGL_Path.triggered.connect(choose_custom_rvgl_location)
 
-        # Handles the launch button
+        # Handles the buttons
         self.btn_launch.clicked.connect(execute_rvgl)
+        self.btn_save.clicked.connect(save_profile)
 
         # Handles the Parameters
         checkboxes = []
         for i_layout in range(6):
-            layout = getattr(self, 'layout_params_{}' .format(i_layout+1))
+            layout = getattr(self, 'layout_params_{}'.format(i_layout + 1))
             for i in range(layout.count()):
                 widget = layout.itemAt(i).widget()
                 if isinstance(widget, QtWidgets.QCheckBox):
@@ -52,6 +42,29 @@ class RVGLAssistantProgram(Ui_MainWindow):
 
         for checkbox in checkboxes:
             checkbox.clicked.connect(lambda _, chk=checkbox: handle_param_click(checkbox=chk))
+
+
+def handle_param_click(checkbox):
+    global selected_params
+    param = checkbox.text().replace('&', '')
+    if checkbox.isChecked():
+        selected_params.append(param)
+    else:
+        selected_params.remove(param)
+
+
+# noinspection PyTypeChecker
+def save_profile():
+    global selected_params
+    if len(selected_params) == 0:
+        QtWidgets.QMessageBox.warning(None, 'No params checked!', "You haven't checked any parameters! Please select at"
+                                                                  " least one and try save again")
+        return
+
+    profile_name, ok = QInputDialog.getText(None, 'Save profile', 'Enter the profile name:')
+    print(ok)
+    if ok:
+        print(str(profile_name))
 
 
 def execute_rvgl():
@@ -104,7 +117,7 @@ def choose_custom_rvgl_location():
     options = QFileDialog.Options()
     options |= QFileDialog.ShowDirsOnly
     path, _ = QtWidgets.QFileDialog.getOpenFileName(None, "Choose RVGL path", "",
-                                                          "All Files (*.*);", options=options)
+                                                    "All Files (*.*);", options=options)
 
     if path:
         configs.rvgl_custom_path = path
