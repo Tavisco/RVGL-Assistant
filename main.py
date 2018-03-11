@@ -10,16 +10,17 @@ from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import QFileDialog, QInputDialog
 from gui import Ui_MainWindow
 from menu_bar import *
-from config import Config
 
 faulthandler.enable()
-configs = Config()
+configs = {}
 configs_loaded = False
 selected_params = []
+lst_profiles = ""
 
 
 class RVGLAssistantProgram(Ui_MainWindow):
     def __init__(self, window):
+        global lst_profiles
         Ui_MainWindow.__init__(self)
         self.setupUi(window)
 
@@ -43,6 +44,8 @@ class RVGLAssistantProgram(Ui_MainWindow):
         for checkbox in checkboxes:
             checkbox.clicked.connect(lambda _, chk=checkbox: handle_param_click(checkbox=chk))
 
+        lst_profiles = self.lst_profiles
+
 
 def handle_param_click(checkbox):
     global selected_params
@@ -55,24 +58,25 @@ def handle_param_click(checkbox):
 
 # noinspection PyTypeChecker
 def save_profile():
-    global selected_params
+    global selected_params, lst_profiles, configs
     if len(selected_params) == 0:
         QtWidgets.QMessageBox.warning(None, 'No params checked!', "You haven't checked any parameters! Please select at"
-                                                                  " least one and try save again")
+                                                                  " least one and try saving again")
         return
 
     profile_name, ok = QInputDialog.getText(None, 'Save profile', 'Enter the profile name:')
-    print(ok)
     if ok:
-        print(str(profile_name))
+        lst_profiles.addItem(profile_name)
+        configs['profiles'][profile_name] = selected_params
+        save_configs()
 
 
 def execute_rvgl():
     global selected_params
-    if configs.rvgl_found:
+    if configs['rvgl_found']:
         print('Launching RVGL')
-        os.chdir(configs.rvgl_custom_path)
-        path = os.path.join(configs.rvgl_custom_path, configs.rvgl_executable)
+        os.chdir(configs['rvgl_custom_path'])
+        path = os.path.join(configs['rvgl_custom_path'], configs['rvgl_executable'])
         command = [path]
         for param in selected_params:
             command.append(param)
@@ -83,13 +87,13 @@ def execute_rvgl():
 
 
 def look_for_rvgl():
-    global configs_loaded
+    global configs_loaded, configs
     if configs_loaded:
         return
 
-    configs.rvgl_found = choose_rvgl_executable()
+    configs['rvgl_found'] = choose_rvgl_executable()
 
-    if not configs.rvgl_found:
+    if not configs['rvgl_found']:
         # noinspection PyTypeChecker
         QtWidgets.QMessageBox.warning(None, 'RVGL not found!',
                                       "RVGL wasn't found automatically!\nOn the next dialog, please select the game "
@@ -104,9 +108,9 @@ def choose_rvgl_executable(path='.'):
     files = [f for f in os.listdir(path)]
     for f in files:
         if rvgl_possible_executables.__contains__(f):
-            configs.rvgl_executable = f
+            configs['rvgl_executable'] = f
             print("Setting RVGL executable to " + f)
-            configs.rvgl_found = True
+            configs['rvgl_found'] = True
             save_configs()
             return True
 
@@ -120,15 +124,27 @@ def choose_custom_rvgl_location():
                                                     "All Files (*.*);", options=options)
 
     if path:
-        configs.rvgl_custom_path = path
-        print("Setting RVGL path to " + configs.rvgl_custom_path)
-        choose_rvgl_executable(path=configs.rvgl_custom_path)
+        configs['rvgl_custom_path'] = path
+        print("Setting RVGL path to " + configs['rvgl_custom_path'])
+        choose_rvgl_executable(path=configs['rvgl_custom_path'])
 
 
 def save_configs():
+    global configs
     with io.open('./assistant.yml', 'w', encoding='utf8') as outfile:
         yaml.dump(configs, outfile, default_flow_style=False, allow_unicode=True)
         print('Configs saved')
+
+
+def load_profile_list():
+    global lst_profiles
+    if configs_loaded:
+        for profile in configs['profiles']:
+            lst_profiles.addItem(profile)
+
+
+def load_first_profile():
+    pass
 
 
 def load_configs():
@@ -139,7 +155,13 @@ def load_configs():
         with open("./assistant.yml", 'r') as ymlfile:
             configs = yaml.load(ymlfile)
             configs_loaded = True
+            load_profile_list()
+            load_first_profile()
             print('Configs loaded')
+    else:
+        # First Run!
+        # We need to create the empty profiles dictionary
+        configs['profiles'] = {}
 
 
 if __name__ == '__main__':
