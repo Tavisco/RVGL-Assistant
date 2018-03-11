@@ -14,6 +14,7 @@ from menu_bar import *
 faulthandler.enable()
 configs = {}
 configs_loaded = False
+loading_profile = False
 selected_params = []
 lst_profiles = ""
 
@@ -45,7 +46,9 @@ class RVGLAssistantProgram(Ui_MainWindow):
         for checkbox in checkboxes:
             checkbox.clicked.connect(lambda _, chk=checkbox: handle_param_click(checkbox=chk))
 
+        # Handles the profiles list
         lst_profiles = self.lst_profiles
+        lst_profiles.clicked.connect(self.profile_clicked)
 
         if configs_loaded:
             # Populate the profiles list
@@ -55,20 +58,38 @@ class RVGLAssistantProgram(Ui_MainWindow):
             # Loads the default checkboxes from config
             if len(configs['profiles']) > 0:
                 first_profile = list(configs['profiles'].keys())[0]
-                print('Loading \'{}\' profile'.format(first_profile))
-                for parameter in configs['profiles'][first_profile]:
-                    clean_parameter = parameter.replace('-', '')
-                    checkbox = getattr(self, 'chk_param_{}'.format(clean_parameter))
-                    checkbox.click()
+                self.load_profile(first_profile)
+
+    def load_profile(self, profile_name):
+        global selected_params, loading_profile
+        loading_profile = True
+        print('Loading \'{}\' profile'.format(profile_name))
+        # First we clear the checkboxes
+        self.click_checkboxes()
+        # And then change the parameters and mark the checkboxes
+        selected_params = configs['profiles'][profile_name]
+        self.click_checkboxes()
+        loading_profile = False
+
+    def click_checkboxes(self):
+        global selected_params
+        for parameter in selected_params:
+            clean_parameter = parameter.replace('-', '')
+            checkbox = getattr(self, 'chk_param_{}'.format(clean_parameter))
+            checkbox.click()
+
+    def profile_clicked(self):
+        self.load_profile(lst_profiles.selectedItems()[0].text())
 
 
 def handle_param_click(checkbox):
-    global selected_params
-    param = checkbox.text().replace('&', '')
-    if checkbox.isChecked():
-        selected_params.append(param)
-    else:
-        selected_params.remove(param)
+    global selected_params, loading_profile
+    if not loading_profile:
+        param = checkbox.text().replace('&', '')
+        if checkbox.isChecked():
+            selected_params.append(param)
+        else:
+            selected_params.remove(param)
 
 
 # noinspection PyTypeChecker
@@ -180,9 +201,8 @@ def load_configs():
 
 if __name__ == '__main__':
     load_configs()
-    look_for_rvgl()
-
     app = QtWidgets.QApplication(sys.argv)
+    look_for_rvgl()
     MainWindow = QtWidgets.QMainWindow()
 
     prog = RVGLAssistantProgram(MainWindow)
