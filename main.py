@@ -120,8 +120,7 @@ def choose_rvgl_executable(path='.'):
 def choose_custom_rvgl_location():
     options = QFileDialog.Options()
     options |= QFileDialog.ShowDirsOnly
-    path, _ = QtWidgets.QFileDialog.getOpenFileName(None, "Choose RVGL path", "",
-                                                    "All Files (*.*);", options=options)
+    path = QtWidgets.QFileDialog.getExistingDirectory(None, "Choose RVGL path", options=options)
 
     if path:
         configs['rvgl_custom_path'] = path
