@@ -7,7 +7,7 @@ import faulthandler
 import io
 from pathlib import Path
 from PyQt5 import QtWidgets
-from PyQt5.QtWidgets import QFileDialog, QInputDialog
+from PyQt5.QtWidgets import QFileDialog, QInputDialog, QMessageBox
 from gui import Ui_MainWindow
 from menu_bar import *
 
@@ -20,7 +20,7 @@ lst_profiles = ""
 
 class RVGLAssistantProgram(Ui_MainWindow):
     def __init__(self, window):
-        global lst_profiles
+        global lst_profiles, configs_loaded
         Ui_MainWindow.__init__(self)
         self.setupUi(window)
 
@@ -31,6 +31,7 @@ class RVGLAssistantProgram(Ui_MainWindow):
         # Handles the buttons
         self.btn_launch.clicked.connect(execute_rvgl)
         self.btn_save.clicked.connect(save_profile)
+        self.btn_delete.clicked.connect(delete_profile)
 
         # Handles the Parameters
         checkboxes = []
@@ -45,6 +46,20 @@ class RVGLAssistantProgram(Ui_MainWindow):
             checkbox.clicked.connect(lambda _, chk=checkbox: handle_param_click(checkbox=chk))
 
         lst_profiles = self.lst_profiles
+
+        if configs_loaded:
+            # Populate the profiles list
+            for profile in configs['profiles']:
+                lst_profiles.addItem(profile)
+
+            # Loads the default checkboxes from config
+            if len(configs['profiles']) > 0:
+                first_profile = list(configs['profiles'].keys())[0]
+                print('Loading \'{}\' profile'.format(first_profile))
+                for parameter in configs['profiles'][first_profile]:
+                    clean_parameter = parameter.replace('-', '')
+                    checkbox = getattr(self, 'chk_param_{}'.format(clean_parameter))
+                    checkbox.click()
 
 
 def handle_param_click(checkbox):
@@ -68,6 +83,19 @@ def save_profile():
     if ok:
         lst_profiles.addItem(profile_name)
         configs['profiles'][profile_name] = selected_params
+        save_configs()
+
+
+# noinspection PyUnresolvedReferences
+def delete_profile():
+    global configs
+    button_reply = QMessageBox.question(None, 'Delete profile', "Are you sure about deleting all selected profiles?", QMessageBox.Yes | QMessageBox.No,
+                                        QMessageBox.No)
+    if button_reply == QMessageBox.Yes:
+        for selected_item in lst_profiles.selectedItems():
+            lst_profiles.takeItem(lst_profiles.row(selected_item))
+            del configs['profiles'][selected_item.text()]
+
         save_configs()
 
 
@@ -135,17 +163,6 @@ def save_configs():
         print('Configs saved')
 
 
-def load_profile_list():
-    global lst_profiles
-    if configs_loaded:
-        for profile in configs['profiles']:
-            lst_profiles.addItem(profile)
-
-
-def load_first_profile():
-    pass
-
-
 def load_configs():
     global configs, configs_loaded
     # We first check if the config file exists
@@ -154,8 +171,6 @@ def load_configs():
         with open("./assistant.yml", 'r') as ymlfile:
             configs = yaml.load(ymlfile)
             configs_loaded = True
-            load_profile_list()
-            load_first_profile()
             print('Configs loaded')
     else:
         # First Run!
@@ -164,13 +179,13 @@ def load_configs():
 
 
 if __name__ == '__main__':
+    load_configs()
+    look_for_rvgl()
+
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
 
     prog = RVGLAssistantProgram(MainWindow)
-
-    load_configs()
-    look_for_rvgl()
 
     MainWindow.show()
     sys.exit(app.exec_())
