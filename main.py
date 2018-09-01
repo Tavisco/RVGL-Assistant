@@ -6,21 +6,23 @@ import subprocess
 import faulthandler
 import io
 from pathlib import Path
-from PyQt5 import QtWidgets
-from PyQt5.QtWidgets import QFileDialog, QInputDialog
+from PyQt5 import QtWidgets, QtGui, QtCore
+from PyQt5.QtWidgets import QFileDialog, QInputDialog, QListView, QListWidgetItem, QListWidget
 from gui import Ui_MainWindow
 from menu_bar import *
+from models import Car
 
 faulthandler.enable()
 configs = {}
 configs_loaded = False
 selected_params = []
 lst_profiles = ""
+grid_cars = ""
 
 
 class RVGLAssistantProgram(Ui_MainWindow):
     def __init__(self, window):
-        global lst_profiles
+        global lst_profiles, grid_cars
         Ui_MainWindow.__init__(self)
         self.setupUi(window)
 
@@ -45,6 +47,7 @@ class RVGLAssistantProgram(Ui_MainWindow):
             checkbox.clicked.connect(lambda _, chk=checkbox: handle_param_click(checkbox=chk))
 
         lst_profiles = self.lst_profiles
+        grid_cars = self.tbl_cars
 
 
 def handle_param_click(checkbox):
@@ -164,6 +167,30 @@ def load_configs():
         configs['profiles'] = {}
 
 
+def look_for_cars():
+    grid_cars.setViewMode(QListView.IconMode)
+    grid_cars.setIconSize(QtCore.QSize(128, 128))
+
+    cars = []
+
+    for file in os.listdir(configs['rvgl_custom_path'] + '/cars/'):
+        if os.path.isdir(configs['rvgl_custom_path'] + '/cars/' + file):
+            car_path = os.path.join(configs['rvgl_custom_path'] + '/gfx/', file)
+            cars.append(Car(file, car_path))
+
+    for car in cars:
+        car_img = os.path.join(configs['rvgl_custom_path'], 'cars', car.car_name, 'carbox.bmp')
+        if not os.path.isfile(car_img):
+            car_img = os.path.join(configs['rvgl_custom_path'], 'gfx', 'bot_bat.bmp')
+
+        item = QListWidgetItem()
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap(car_img), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        item.setIcon(icon)
+        item.setText(car.car_name)
+        grid_cars.addItem(item)
+
+
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
@@ -172,6 +199,7 @@ if __name__ == '__main__':
 
     load_configs()
     look_for_rvgl()
+    look_for_cars()
 
     MainWindow.show()
     sys.exit(app.exec_())
