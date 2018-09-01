@@ -7,7 +7,7 @@ import faulthandler
 import io
 from pathlib import Path
 from PyQt5 import QtWidgets, QtGui, QtCore
-from PyQt5.QtWidgets import QFileDialog, QInputDialog, QListView, QListWidgetItem, QListWidget
+from PyQt5.QtWidgets import QFileDialog, QInputDialog, QListView, QListWidgetItem, QListWidget, QMessageBox
 from gui import Ui_MainWindow
 from menu_bar import *
 from models import Car
@@ -15,6 +15,7 @@ from models import Car
 faulthandler.enable()
 configs = {}
 configs_loaded = False
+loading_profile = False
 selected_params = []
 lst_profiles = ""
 grid_cars = ""
@@ -22,7 +23,7 @@ grid_cars = ""
 
 class RVGLAssistantProgram(Ui_MainWindow):
     def __init__(self, window):
-        global lst_profiles, grid_cars
+        global lst_profiles, grid_cars, configs_loaded
         Ui_MainWindow.__init__(self)
         self.setupUi(window)
 
@@ -33,6 +34,7 @@ class RVGLAssistantProgram(Ui_MainWindow):
         # Handles the buttons
         self.btn_launch.clicked.connect(execute_rvgl)
         self.btn_save.clicked.connect(save_profile)
+        self.btn_delete.clicked.connect(delete_profile)
 
         # Handles the Parameters
         checkboxes = []
@@ -46,17 +48,52 @@ class RVGLAssistantProgram(Ui_MainWindow):
         for checkbox in checkboxes:
             checkbox.clicked.connect(lambda _, chk=checkbox: handle_param_click(checkbox=chk))
 
+        # Handles the profiles list
         lst_profiles = self.lst_profiles
         grid_cars = self.tbl_cars
 
+        lst_profiles.clicked.connect(self.profile_clicked)
+
+        if configs_loaded:
+            # Populate the profiles list
+            for profile in configs['profiles']:
+                lst_profiles.addItem(profile)
+
+            # Loads the default checkboxes from config
+            if len(configs['profiles']) > 0:
+                first_profile = list(configs['profiles'].keys())[0]
+                self.load_profile(first_profile)
+
+    def load_profile(self, profile_name):
+        global selected_params, loading_profile
+        loading_profile = True
+        print('Loading \'{}\' profile'.format(profile_name))
+        # First we clear the checkboxes
+        self.click_checkboxes()
+        # And then change the parameters and mark the checkboxes
+        selected_params = configs['profiles'][profile_name]
+        self.click_checkboxes()
+        loading_profile = False
+
+    def click_checkboxes(self):
+        global selected_params
+        for parameter in selected_params:
+            clean_parameter = parameter.replace('-', '')
+            checkbox = getattr(self, 'chk_param_{}'.format(clean_parameter))
+            checkbox.click()
+
+    def profile_clicked(self):
+        self.load_profile(lst_profiles.selectedItems()[0].text())
+
 
 def handle_param_click(checkbox):
-    global selected_params
-    param = checkbox.text().replace('&', '')
-    if checkbox.isChecked():
-        selected_params.append(param)
-    else:
-        selected_params.remove(param)
+    global selected_params, loading_profile
+    if not loading_profile:
+        param = checkbox.text().replace('&', '')
+        if checkbox.isChecked():
+            selected_params.append(param)
+        else:
+            selected_params.remove(param)
 
 
 # noinspection PyTypeChecker
@@ -71,6 +108,19 @@ def save_profile():
     if ok:
         lst_profiles.addItem(profile_name)
         configs['profiles'][profile_name] = selected_params
+        save_configs()
+
+
+# noinspection PyUnresolvedReferences
+def delete_profile():
+    global configs
+    button_reply = QMessageBox.question(None, 'Delete profile', "Are you sure about deleting all selected profiles?", QMessageBox.Yes | QMessageBox.No,
+                                        QMessageBox.No)
+    if button_reply == QMessageBox.Yes:
+        for selected_item in lst_profiles.selectedItems():
+            lst_profiles.takeItem(lst_profiles.row(selected_item))
+            del configs['profiles'][selected_item.text()]
+
         save_configs()
 
 
@@ -123,8 +173,7 @@ def choose_rvgl_executable(path='.'):
 def choose_custom_rvgl_location():
     options = QFileDialog.Options()
     options |= QFileDialog.ShowDirsOnly
-    path, _ = QtWidgets.QFileDialog.getOpenFileName(None, "Choose RVGL path", "",
-                                                    "All Files (*.*);", options=options)
+    path = QtWidgets.QFileDialog.getExistingDirectory(None, "Choose RVGL path", options=options)
 
     if path:
         configs['rvgl_custom_path'] = path
@@ -139,17 +188,6 @@ def save_configs():
         print('Configs saved')
 
 
-def load_profile_list():
-    global lst_profiles
-    if configs_loaded:
-        for profile in configs['profiles']:
-            lst_profiles.addItem(profile)
-
-
-def load_first_profile():
-    pass
-
-
 def load_configs():
     global configs, configs_loaded
     # We first check if the config file exists
@@ -158,8 +196,6 @@ def load_configs():
         with open("./assistant.yml", 'r') as ymlfile:
             configs = yaml.load(ymlfile)
             configs_loaded = True
-            load_profile_list()
-            load_first_profile()
             print('Configs loaded')
     else:
         # First Run!
@@ -192,7 +228,9 @@ def look_for_cars():
 
 
 if __name__ == '__main__':
+    load_configs()
     app = QtWidgets.QApplication(sys.argv)
+    look_for_rvgl()
     MainWindow = QtWidgets.QMainWindow()
 
     prog = RVGLAssistantProgram(MainWindow)
